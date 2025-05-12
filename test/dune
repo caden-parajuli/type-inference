@@ -1,0 +1,4 @@
+(test
+ (name test_type_inference)
+ (preprocess
+  (pps ppx_inline_test)))
