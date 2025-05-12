@@ -15,9 +15,16 @@ let exclude_var (a : assertions) (x : var) =
   List.filter
     (fun (a1 : assertion) ->
       match a1 with
-      | Var v, _ when v = x -> true
-      | _ -> false)
+      | Var v, _ when v <> x -> true
+      | _ -> true)
     a
+
+let string_of_assertions asserts =
+  List.fold_left
+    (fun s -> function
+      | e, ts -> s ^ string_of_exp e ^ ":" ^ string_of_type_scheme ts ^ ",")
+    "{ " asserts
+  ^ " }"
 
 type fresh_var_state = int
 
@@ -66,7 +73,7 @@ let rec algorithm_w (a : assertions) (e : expression)
       let* s2, t2, var_state = algorithm_w (sub_assertions s1 a) e2 var_state in
       let beta, var_state = fresh_var var_state in
       let* v = unify (sub_type s2 t1) (Arrow (t2, TVar beta)) in
-      Some (List.flatten [ v; s2; s1 ], sub_type v (TVar beta), var_state)
+      Some (List.flatten [ s1; s2; v ], sub_type v (TVar beta), var_state)
   | Lambda (x, e1) ->
       let beta, var_state = fresh_var var_state in
       let new_assertions = (Var x, Type (TVar beta)) :: exclude_var a x in
@@ -79,7 +86,15 @@ let rec algorithm_w (a : assertions) (e : expression)
       in
       let* s2, t2, var_state = algorithm_w new_assertions e2 var_state in
       Some (List.append s1 s2, t2, var_state)
+  | LiteralBool _ ->
+    Some ([], Primitive Bool, var_state)
+  | LiteralInt _ ->
+    Some ([], Primitive Int, var_state)
 
-let infer e =
-  let* s, t, _ = algorithm_w [] e 0 in
+
+let infer_with_assumptions a e =
+  let* s, t, _ = algorithm_w a e 0 in
   Some (s, t)
+
+let infer = infer_with_assumptions []
+
