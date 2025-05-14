@@ -1,13 +1,6 @@
 open Type_inference
-open Type_inference.Expressions
-
-let infer_to_string e =
-  match Inference.infer e with
-  | Some (_, t) -> Types.string_of_type t
-  | None -> "Not well-typed"
-
-let infer_and_print e =
-  print_endline @@ string_of_exp e ^ ": " ^ infer_to_string e
+open Inference
+open Expressions
 
 let () =
   infer_and_print @@ Lambda ("x", LiteralInt 1);

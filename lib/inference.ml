@@ -98,3 +98,10 @@ let infer_with_assumptions a e =
 
 let infer = infer_with_assumptions []
 
+let infer_to_string e =
+  match infer e with
+  | Some (_, t) -> Types.string_of_type t
+  | None -> "Not well-typed"
+
+let infer_and_print e =
+  print_endline @@ string_of_exp e ^ ": " ^ infer_to_string e
