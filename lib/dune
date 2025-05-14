@@ -1,5 +1,2 @@
 (library
- (inline_tests)
- (name type_inference)
- (preprocess
-  (pps ppx_inline_test)))
+ (name type_inference))

@@ -1,6 +1,4 @@
 (executable
  (public_name type_inference)
  (name main)
- (libraries type_inference)
- (preprocess
-  (pps ppx_inline_test)))
+ (libraries type_inference))

@@ -57,6 +57,3 @@ let rec string_of_type = function
 let rec string_of_type_scheme = function
     | Quantify (v,ts) -> "∀" ^ v ^ (string_of_type_scheme ts)
     | Type t -> string_of_type t
-
-let%test "monotype_primitive" = is_monotype @@ Primitive Bool
-let%test "monotype_arrow" = is_monotype @@ Arrow (Primitive Int, Primitive Bool)

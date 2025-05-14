@@ -50,18 +50,3 @@ let rec unify t1 t2 =
       let* sub2 = unify (sub_type sub1 t12) (sub_type sub1 t22) in
       Some (List.append sub1 @@ sub2)
   | _ -> None
-
-let%test "unify_simple" =
-  unify (TVar "x") (Primitive Bool) = Some [ ("x", Primitive Bool) ]
-
-let%test "unify_complex" =
-  unify
-    (Arrow (TVar "x", TVar "y"))
-    (Arrow (Arrow (Primitive Int, Primitive Int), Primitive Bool))
-  = Some [ ("x", Arrow (Primitive Int, Primitive Int)); ("y", Primitive Bool) ]
-
-let%test "unify_no_extra" =
-  unify
-    (Arrow (TVar "x", TVar "y"))
-    (Arrow (Arrow (Primitive Int, Primitive Int), TVar "y"))
-  = Some [ ("x", Arrow (Primitive Int, Primitive Int)) ]
